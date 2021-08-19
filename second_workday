@@ -1,0 +1,36 @@
+#/bin/sh
+#find the day's sencond workday
+
+month_end_date=$1
+add_days=( [1]='2' [2]='2' [3]='2' [4]='4' [5]='4' [6]='3' [7]='2' )
+target_days=()
+judge_include_new_year=0
+
+month_end_date_weekday=$(date -d${month_end_date} +%u)
+add_day=${add_days[${month_end_date_weekday}]}
+
+for ((item=1; item<=add_day; item ++))
+do 
+  target_days[${item}]=$( date -d"${month_end_date} +${item} day" +%m%d )
+done
+
+for each_day in ${target_days[@]}
+do
+  if [ ${each_day} = "0101" ]; then
+    judge_include_new_year=$[${judge_include_new_year}+1]
+  fi
+done
+
+if [ ${judge_include_new_year} != "0" ]; then
+  if [ ${month_end_date_weekday} = "3" ]; then
+	second_work_day=$(date -d"${month_end_date} + $[ ${add_day} + 3 ] day" +%Y%m%d )
+  else
+	second_work_day=$(date -d"${month_end_date} + $[ ${add_day} + 1 ] day" +%Y%m%d )
+  fi
+else
+  second_work_day=$(date -d"${month_end_date} + ${add_day} day" +%Y%m%d )
+fi
+
+echo ${second_work_day}
+
+
